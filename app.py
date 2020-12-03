@@ -27,7 +27,7 @@ df_sum.drop("collected_date", axis=1, inplace=True)
 
 ### Ontario Schols with Active Case Data set
 url = "https://data.ontario.ca/dataset/b1fef838-8784-4338-8ef9-ae7cfd405b41/resource/8b6d22e2-7065-4b0f-966f-02640be366f2/download/schoolsactivecovid.csv"
-df_active = pd.read_csv(url)
+df_active = pd.read_csv(url, encoding='latin-1')
 df_active["reported_date"] = pd.to_datetime(df_active["reported_date"])
 
 ## Drop collected_date from Active data set
@@ -94,9 +94,9 @@ fig.add_trace(
         row = 1, col = 1
      )
 
-fig.update_layout(
-        title = f"Cumulative COVID-19 Cases in Students, Staff & Total <br> Report Updated: {last_reported_date}",
-)
+#fig.update_layout(
+#        title = f"Cumulative COVID-19 Cases in Students, Staff & Total <br> Report Updated: {last_reported_date}",
+#)
 
 fig.add_trace(
     go.Indicator(
@@ -188,14 +188,16 @@ fig.update_layout(
     template = "presentation",
     title = {
         'text' : f"Ontario Schools COVID-19 Cases as of: <b>{max(df_active.reported_date).date()}",
-        'x' : 0.08,
-        'y' : 0.96,
+        'x' : 0.05,
+        'y' : 0.95,
         'xanchor' : 'left'},
+    title_x = 0.05,
+    title_font_color = '#CD6155',
     showlegend = False,
-    yaxis_title = f"Cumulative COVID-19 Cases from {min(df_sum.reported_date).date()}",
+    yaxis_title = "CASES",
     font = dict(
             family = "Arial",
-            size = 16),
+            size = 14),
     hovermode = False,
 )
 
@@ -206,11 +208,16 @@ fig.update_xaxes(
 fig.update_yaxes(
     showgrid = True, gridcolor = "lightgrey")
 
+fig['layout']['xaxis2'].update(title = "Current Active COVID-19 Cases in ONT Municipalities", title_font_color = "#CD6155")
+fig['layout']['xaxis3'].update(title = "Weekly Average COVID-19 Cases in ONT Schools", title_font_color = "#CD6155")
+#fig['layout']['xaxis1'].update(title = f"Cumulative COVID-19 Cases as of: {min(df_sum.reported_date).date()}", showgrid = False)
+
 
 app = dash.Dash(__name__)
 server = app.server
 
 app.layout = html.Div(style = {'textAlign': 'Center'}, children = [
+    html.H1(children = f"ONTARIO COVID-19 CASES in SCHOOLS\n (Updated: {max(df_sum.reported_date).date()} )"),
 
     dcc.Graph(
         style = {'height':"100vh"},
