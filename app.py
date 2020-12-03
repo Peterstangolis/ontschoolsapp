@@ -187,7 +187,7 @@ fig.add_trace(
 fig.update_layout(
     template = "presentation",
     title = {
-        'text' : f"Ontario Schools COVID-19 Cases as of: <b>{max(df_active.reported_date).date()}",
+        'text' : f"Cumulative COVID-19 Cases in Ontario Schools from: {max(df_sum.reported_date).date()}",
         'x' : 0.05,
         'y' : 0.95,
         'xanchor' : 'left'},
@@ -210,7 +210,7 @@ fig.update_yaxes(
 
 fig['layout']['xaxis2'].update(title = "Current Active COVID-19 Cases in ONT Municipalities", title_font_color = "#CD6155")
 fig['layout']['xaxis3'].update(title = "Weekly Average COVID-19 Cases in ONT Schools", title_font_color = "#CD6155")
-#fig['layout']['xaxis1'].update(title = f"Cumulative COVID-19 Cases as of: {min(df_sum.reported_date).date()}", showgrid = False)
+fig['layout']['xaxis1'].update(showgrid = False)
 
 
 app = dash.Dash(__name__)
