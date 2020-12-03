@@ -168,7 +168,7 @@ colors[0] = 'crimson'
 
 fig.add_trace(
     go.Bar(y = df_municiaplity_now['total_confirmed_cases'], x = df_municiaplity_now['municipality'],
-          marker_color= colors),
+          marker_color= colors,
           text = df_municiaplity_now['total_confirmed_cases'],
           textposition = 'auto'),
     row = 4, col = 1
