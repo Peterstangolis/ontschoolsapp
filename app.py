@@ -80,7 +80,7 @@ fig = make_subplots(
                     [{"type" : "scatter", "rowspan": 3, "colspan" : 3}, None, None, {"type": "indicator"},{"type": "indicator"},{"type": "indicator"} ],
                     [  None, None, None,                             {"type" : "indicator"},  None, None],
                     [  None, None, None,                             {"type": "indicator"}, {"type": "indicator", "rowspan" : 1, "colspan": 2}, None],
-                    [{"type" : "bar", "rowspan": 2, "colspan" : 6},  None, None, None, None, None],
+                    [{"type" : "bar", "rowspan": 2, "colspan" : 4}, None, None, None,  {"type": "bar", "rowspan" : 2, "colspan" : 2}, None],
                     [  None, None, None, None, None, None],
                 ]
 )
@@ -103,7 +103,7 @@ fig.add_trace(
         value = value_t,
         delta = {'reference': reference_t},
         mode = "number+delta",
-        title = {"text": "New Total Cases"},
+        title = {"text": "NEW:  Total Cases"},
         domain = {'row': 0, 'column': 0}
     ),
     row = 1, col = 4
@@ -114,7 +114,7 @@ fig.add_trace(
         value = value_student,
         delta = {'reference': reference_student, 'relative': False},
         mode = "number+delta",
-        title = {"text" :"New Student Cases"},
+        title = {"text" :"Student Cases"},
         domain = {'row': 0, 'column': 2}),
      row = 1, col = 5
 )
@@ -124,7 +124,7 @@ fig.add_trace(
         mode = "number+delta",
         value = value_staff,
         delta = {"reference": reference_staff},
-        title = {"text" :"New Staff Cases"},
+        title = {"text" :"Staff Cases"},
         domain = {'row': 0, 'column': 1}),
     row = 1, col = 6
 )
@@ -155,11 +155,9 @@ fig.add_trace(
         mode = "gauge+number",
         value = df_sum.reported_date.count(),
         title = {'text': "<span style='font-size:0.8em'> Schools Days Completed vs <br> Days in School Year</span>"},
-        gauge = {
-            'axis' : {'visible' :True}
-        },
-        gauge_axis = {
-            'range' : [0, 195]}
+        gauge = {'axis' : { 'range' : [0, 195]},
+                    'threshold' : {'line' : {'color': "red", 'width' : 4}, 'thickness': 0.90, 'value' : 194}}
+
     ),
     row = 3, col = 5
 )
@@ -170,17 +168,43 @@ colors[0] = 'crimson'
 
 fig.add_trace(
     go.Bar(y = df_municiaplity_now['total_confirmed_cases'], x = df_municiaplity_now['municipality'],
-           texttemplate = df_municiaplity_now["total_confirmed_cases"],
           marker_color= colors),
+          text = df_municiaplity_now['total_confirmed_cases'],
+          textposition = 'auto'),
     row = 4, col = 1
 )
 
-fig.update_layout(
-    template = "seaborn",
-    title = f"Ontario Schools COVID-19 Cases as of: <b>{max(df_active.reported_date).date()}",
-    showlegend = False
-    ,
+df_weekly.rename(columns= {"index" : "Start of Week", "new_total_school_related_cases" : "Weekly Average COVID-19 Cases"}, inplace = True)
+fig.add_trace(
+            go.Bar(y = df_weekly["Weekly Average COVID-19 Cases"], x = df_weekly["Start of Week"],
+                  marker_color = df_weekly["Weekly Average COVID-19 Cases"],
+                  text = df_weekly["Weekly Average COVID-19 Cases"],
+                  textposition = 'auto'),
+    row = 4, col = 5
 )
+
+
+fig.update_layout(
+    template = "presentation",
+    title = {
+        'text' : f"Ontario Schools COVID-19 Cases as of: <b>{max(df_active.reported_date).date()}",
+        'x' : 0.08,
+        'y' : 0.96,
+        'xanchor' : 'left'},
+    showlegend = False,
+    yaxis_title = f"Cumulative COVID-19 Cases from {min(df_sum.reported_date).date()}",
+    font = dict(
+            family = "Arial",
+            size = 16),
+    hovermode = False,
+)
+
+fig.update_xaxes(
+    tickangle = -30,
+    tickfont = dict(size = 13)
+)
+fig.update_yaxes(
+    showgrid = True, gridcolor = "lightgrey")
 
 
 app = dash.Dash(__name__)
