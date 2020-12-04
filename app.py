@@ -145,22 +145,25 @@ fig.add_trace(
 )
 
 schools_w_cases = df_sum.current_schools_w_cases[df_sum.reported_date == max(df_sum.reported_date)].values[0]
-
+y_schools_w_cases = df_sum.loc[df_sum.index[-2], 'current_schools_w_cases']
 
 fig.add_trace(
     go.Indicator(
-        mode = 'number',
+        mode = 'number+delta',
         value = schools_w_cases,
+        delta = {'reference' : y_schools_w_cases},
         title = "Schools with Cases"),
     row = 2, col = 4
 )
+#reference_staff = df_sum.loc[df_sum.index[-2], 'new_school_related_staff_cases']
 
-value = df_sum.current_schools_closed[df_sum.reported_date == max(df_sum.reported_date)].values[0]
-
+value = df_sum.loc[df_sum.index[-1], 'current_schools_closed']
+value_yest = df_sum.loc[df_sum.index[-2], 'current_schools_closed']
 fig.add_trace(
     go.Indicator(
-        mode = 'number',
+        mode = 'number+delta',
         value = value,
+        delta = {'reference' : value_yest},
         title = "Schools Closed"),
     row = 3, col = 4
 )
@@ -178,23 +181,25 @@ fig.add_trace(
 )
 
 
-colors = ['lightslategrey',] * len(df_municiaplity_now)
+colors = ['#5DADE2',] * len(df_municiaplity_now)
 colors[0] = 'crimson'
 
 fig.add_trace(
     go.Bar(y = df_municiaplity_now['total_confirmed_cases'], x = df_municiaplity_now['municipality'],
           marker_color= colors,
           text = df_municiaplity_now['total_confirmed_cases'],
-          textposition = 'auto'),
+          textposition = 'outside'),
     row = 4, col = 1
 )
 
+colors_two = ['#5DADE2',] * len(df_weekly)
+colors_two[-1] = 'crimson'
 df_weekly.rename(columns= {"index" : "Start of Week", "new_total_school_related_cases" : "Weekly Average COVID-19 Cases"}, inplace = True)
 fig.add_trace(
             go.Bar(y = df_weekly["Weekly Average COVID-19 Cases"], x = df_weekly["Start of Week"],
-                  marker_color = df_weekly["Weekly Average COVID-19 Cases"],
+                  marker_color = colors_two,
                   text = df_weekly["Weekly Average COVID-19 Cases"],
-                  textposition = 'auto'),
+                  textposition = 'outside'),
     row = 4, col = 5
 )
 
@@ -238,7 +243,8 @@ app = dash.Dash(__name__)
 server = app.server
 
 app.layout = html.Div(style = {'textAlign': 'Center'}, children = [
-    html.H1(children = f"ONTARIO COVID-19 CASES in SCHOOLS\n (Updated: {max(df_sum.reported_date).date()} )"),
+    html.H1(children = "ONTARIO COVID-19 CASES in SCHOOLS"),
+    html.H2(children = f"Updated: {max(df_sum.reported_date).date()}"),
 
     dcc.Graph(
         style = {'height':"100vh"},
