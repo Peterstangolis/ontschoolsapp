@@ -90,9 +90,24 @@ last_reported_date = max(df_sum.reported_date)
 fig.add_trace(
        go.Scatter(
         x = df_sum['reported_date'],
-        y = df_sum['cumulative_school_related_cases']),
+        y = df_sum['cumulative_school_related_cases'],
+        mode = 'lines+markers',
+        marker = dict(color = '#5DADE2')
+       ),
         row = 1, col = 1
      )
+
+fig.add_annotation(x = max(df_sum.reported_date), y = max(df_sum.cumulative_school_related_cases),
+                  text = max(df_sum.cumulative_school_related_cases),
+                  showarrow = True,
+                  arrowhead = 2,
+                  font = dict(
+                      size = 16,
+                      color = "white"
+                  ),
+                  arrowcolor = "darkred",
+                  bordercolor = 'darkred',
+                  bgcolor= '#5D6D7E')
 
 #fig.update_layout(
 #        title = f"Cumulative COVID-19 Cases in Students, Staff & Total <br> Report Updated: {last_reported_date}",
@@ -185,9 +200,9 @@ fig.add_trace(
 
 
 fig.update_layout(
-    template = "presentation",
+    template = "plotly_dark",
     title = {
-        'text' : f"Cumulative COVID-19 Cases in Ontario Schools from: {max(df_sum.reported_date).date()}",
+        'text' : f"ONTARIO COVID-19 CASES in SCHOOLS\n <b>(Updated: {max(df_sum.reported_date).date()} )",
         'x' : 0.05,
         'y' : 0.95,
         'xanchor' : 'left'},
@@ -198,19 +213,25 @@ fig.update_layout(
     font = dict(
             family = "Arial",
             size = 14),
-    hovermode = False,
+    margin = dict( pad = 2)
+
 )
 
 fig.update_xaxes(
     tickangle = -30,
-    tickfont = dict(size = 13)
+    tickfont = dict(size = 14)
 )
 fig.update_yaxes(
     showgrid = True, gridcolor = "lightgrey")
 
+fig['layout']['yaxis1'].update(automargin = True)
+fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
+fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
+fig['layout']['xaxis1'].update(showgrid = False, automargin = True, tickangle = 0)
 fig['layout']['xaxis2'].update(title = "Current Active COVID-19 Cases in ONT Municipalities", title_font_color = "#CD6155")
-fig['layout']['xaxis3'].update(title = "Weekly Average COVID-19 Cases in ONT Schools", title_font_color = "#CD6155")
-fig['layout']['xaxis1'].update(showgrid = False)
+#fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
+fig['layout']['xaxis3'].update(title = "Weekly Average COVID-19 Cases in ONT Schools", title_font_color = "#CD6155", tickangle = 0)
+#fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
 
 
 app = dash.Dash(__name__)
