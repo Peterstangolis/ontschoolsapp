@@ -86,6 +86,7 @@ fig = make_subplots(
 )
 
 last_reported_date = max(df_sum.reported_date)
+first_reported_date = min(df_sum.reported_date).date()
 
 fig.add_trace(
        go.Scatter(
@@ -102,15 +103,14 @@ fig.add_annotation(x = max(df_sum.reported_date), y = max(df_sum.cumulative_scho
                   showarrow = True,
                   arrowhead = 2,
                   font = dict(
-                      size = 16,
+                      size = 17,
                       color = "white"
                   ),
                   arrowcolor = "darkred",
-                  bordercolor = 'darkred',
-                  bgcolor= '#5D6D7E')
+                  bordercolor = 'darkred')
 
 #fig.update_layout(
-#        title = f"Cumulative COVID-19 Cases in Students, Staff & Total <br> Report Updated: {last_reported_date}",
+#        title = f"Cumulative COVID-19 Cases in Students, Staff & Total <br> Report Updated: {first_reported_date }",
 #)
 
 fig.add_trace(
@@ -202,9 +202,9 @@ fig.add_trace(
 fig.update_layout(
     template = "plotly_dark",
     title = {
-        'text' : f"ONTARIO COVID-19 CASES in SCHOOLS\n <b>(Updated: {max(df_sum.reported_date).date()} )",
+        'text' : f"Cumulative COVID-19 Cases in Ontario Schools; <br> First Reported Date: {first_reported_date }",
         'x' : 0.05,
-        'y' : 0.95,
+        'y' : 0.93,
         'xanchor' : 'left'},
     title_x = 0.05,
     title_font_color = '#CD6155',
@@ -212,7 +212,7 @@ fig.update_layout(
     yaxis_title = "CASES",
     font = dict(
             family = "Arial",
-            size = 14),
+            size = 12),
     margin = dict( pad = 2)
 
 )
