@@ -118,7 +118,7 @@ fig.add_trace(
         value = value_t,
         delta = {'reference': reference_t},
         mode = "number+delta",
-        title = {"text": "NEW:  Total Cases"},
+        title = {"text": "NEW:<br><span style = 'font-size:0.8em; color:#5DADE2'>Total Cases</span>"},
         domain = {'row': 0, 'column': 0}
     ),
     row = 1, col = 4
@@ -129,7 +129,7 @@ fig.add_trace(
         value = value_student,
         delta = {'reference': reference_student, 'relative': False},
         mode = "number+delta",
-        title = {"text" :"Student Cases"},
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Student Cases</span>"},
         domain = {'row': 0, 'column': 2}),
      row = 1, col = 5
 )
@@ -139,7 +139,7 @@ fig.add_trace(
         mode = "number+delta",
         value = value_staff,
         delta = {"reference": reference_staff},
-        title = {"text" :"Staff Cases"},
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Staff Cases</span>"},
         domain = {'row': 0, 'column': 1}),
     row = 1, col = 6
 )
@@ -152,19 +152,20 @@ fig.add_trace(
         mode = 'number+delta',
         value = schools_w_cases,
         delta = {'reference' : y_schools_w_cases},
-        title = "Schools with Cases"),
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools with Cases</span>"}),
     row = 2, col = 4
 )
-#reference_staff = df_sum.loc[df_sum.index[-2], 'new_school_related_staff_cases']
+
 
 value = df_sum.loc[df_sum.index[-1], 'current_schools_closed']
 value_yest = df_sum.loc[df_sum.index[-2], 'current_schools_closed']
+
 fig.add_trace(
     go.Indicator(
         mode = 'number+delta',
         value = value,
         delta = {'reference' : value_yest},
-        title = "Schools Closed"),
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools Closed</span>"}),
     row = 3, col = 4
 )
 
