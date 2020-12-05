@@ -72,16 +72,20 @@ value_staff  = df_sum.loc[df_sum.index[-1], 'new_school_related_staff_cases']
 # Previous Day School Total
 reference_staff = df_sum.loc[df_sum.index[-2], 'new_school_related_staff_cases']
 
+# Schools with 5 or more cases
+df_schools_total_active_now = df_active_now.groupby(["municipality","school"])['total_confirmed_cases'].sum().reset_index().sort_values(by = "total_confirmed_cases", ascending = False)
+schools_w_five_or_more = df_schools_total_active_now[df_schools_total_active_now.total_confirmed_cases >= 5].school.count()
+
 
 #### CREATE THE DASHBOARD ####
 fig = make_subplots(
         rows = 5, cols = 6,
         specs = [
-                    [{"type" : "scatter", "rowspan": 3, "colspan" : 3}, None, None, {"type": "indicator"},{"type": "indicator"},{"type": "indicator"} ],
-                    [  None, None, None,                             {"type" : "indicator"},  None, None],
-                    [  None, None, None,                             {"type": "indicator"}, {"type": "indicator", "rowspan" : 1, "colspan": 2}, None],
-                    [{"type" : "bar", "rowspan": 2, "colspan" : 4}, None, None, None,  {"type": "bar", "rowspan" : 2, "colspan" : 2}, None],
+                    [ {"type": "indicator"}, {"type": "indicator"}, {"type": "indicator"}, {"type" : "indicator"}, {"type" : "indicator"}, {"type" : "indicator"} ],
+                    [ {"type" : "scatter", "rowspan": 2, "colspan" : 3}, None, None, {"type" : "bar", "rowspan" : 2, "colspan" : 3}, None, None],
                     [  None, None, None, None, None, None],
+                    [{"type" : "bar", "rowspan": 2, "colspan" : 4}, None, None, None, None, None],
+                    [  None, None, None, None, {"type": "indicator", "rowspan" : 1, "colspan" : 2}, None],
                 ]
 )
 
@@ -95,7 +99,7 @@ fig.add_trace(
         mode = 'lines+markers',
         marker = dict(color = '#5DADE2')
        ),
-        row = 1, col = 1
+        row = 2, col = 1
      )
 
 fig.add_annotation(x = max(df_sum.reported_date), y = max(df_sum.cumulative_school_related_cases),
@@ -103,7 +107,7 @@ fig.add_annotation(x = max(df_sum.reported_date), y = max(df_sum.cumulative_scho
                   showarrow = True,
                   arrowhead = 2,
                   font = dict(
-                      size = 17,
+                      size = 16,
                       color = "white"
                   ),
                   arrowcolor = "darkred",
@@ -118,10 +122,10 @@ fig.add_trace(
         value = value_t,
         delta = {'reference': reference_t},
         mode = "number+delta",
-        title = {"text": "NEW:<br><span style = 'font-size:0.8em; color:#5DADE2'>Total Cases</span>"},
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Total Cases</span>"},
         domain = {'row': 0, 'column': 0}
     ),
-    row = 1, col = 4
+    row = 1, col = 1
 )
 
 fig.add_trace(
@@ -131,7 +135,7 @@ fig.add_trace(
         mode = "number+delta",
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Student Cases</span>"},
         domain = {'row': 0, 'column': 2}),
-     row = 1, col = 5
+     row = 1, col = 2
 )
 
 fig.add_trace(
@@ -139,9 +143,9 @@ fig.add_trace(
         mode = "number+delta",
         value = value_staff,
         delta = {"reference": reference_staff},
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Staff Cases</span>"},
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Staff cases</span>"},
         domain = {'row': 0, 'column': 1}),
-    row = 1, col = 6
+    row = 1, col = 3
 )
 
 schools_w_cases = df_sum.current_schools_w_cases[df_sum.reported_date == max(df_sum.reported_date)].values[0]
@@ -149,11 +153,10 @@ y_schools_w_cases = df_sum.loc[df_sum.index[-2], 'current_schools_w_cases']
 
 fig.add_trace(
     go.Indicator(
-        mode = 'number+delta',
+        mode = 'number',
         value = schools_w_cases,
-        delta = {'reference' : y_schools_w_cases},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools with Cases</span>"}),
-    row = 2, col = 4
+    row = 1, col = 4
 )
 
 
@@ -162,33 +165,40 @@ value_yest = df_sum.loc[df_sum.index[-2], 'current_schools_closed']
 
 fig.add_trace(
     go.Indicator(
-        mode = 'number+delta',
+        mode = 'number',
         value = value,
-        delta = {'reference' : value_yest},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools Closed</span>"}),
-    row = 3, col = 4
-)
+    row = 1, col = 5)
+
 
 fig.add_trace(
     go.Indicator(
         mode = "gauge+number",
         value = df_sum.reported_date.count(),
-        title = {'text': "<span style='font-size:0.8em'> Schools Days Completed vs <br> Days in School Year</span>"},
+        title = {'text': "<span style='font-size:0.8em; color:#5DADE2'> Schools Days Completed vs <br> Days in School Year</span>"},
         gauge = {'axis' : { 'range' : [0, 195]},
                     'threshold' : {'line' : {'color': "red", 'width' : 4}, 'thickness': 0.90, 'value' : 194}}
 
     ),
-    row = 3, col = 5
+    row = 5, col = 5
 )
+
+
+fig.add_trace(
+    go.Indicator(
+        mode = 'number',
+        value = schools_w_five_or_more,
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools with 5 or more cases</span>"}),
+    row = 1, col = 6)
 
 
 colors = ['#5DADE2',] * len(df_municiaplity_now)
 colors[0] = 'crimson'
 
 fig.add_trace(
-    go.Bar(y = df_municiaplity_now['total_confirmed_cases'], x = df_municiaplity_now['municipality'],
-          marker_color= colors,
-          text = df_municiaplity_now['total_confirmed_cases'],
+    go.Bar(y = df_municiaplity_now["total_confirmed_cases"], x = df_municiaplity_now["municipality"],
+           marker_color= colors,
+           text = df_municiaplity_now['total_confirmed_cases'],
           textposition = 'outside'),
     row = 4, col = 1
 )
@@ -201,24 +211,18 @@ fig.add_trace(
                   marker_color = colors_two,
                   text = df_weekly["Weekly Average COVID-19 Cases"],
                   textposition = 'outside'),
-    row = 4, col = 5
+    row = 2, col = 4
 )
 
 
 fig.update_layout(
     template = "plotly_dark",
-    title = {
-        'text' : f"Cumulative COVID-19 Cases in Ontario Schools; <br> First Reported Date: {first_reported_date }",
-        'x' : 0.05,
-        'y' : 0.93,
-        'xanchor' : 'left'},
-    title_x = 0.05,
     title_font_color = '#CD6155',
     showlegend = False,
     yaxis_title = "CASES",
     font = dict(
             family = "Arial",
-            size = 12),
+            size = 16),
     margin = dict( pad = 2)
 
 )
@@ -233,10 +237,11 @@ fig.update_yaxes(
 fig['layout']['yaxis1'].update(automargin = True)
 fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
 fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis1'].update(showgrid = False, automargin = True, tickangle = 0)
-fig['layout']['xaxis2'].update(title = "Current Active COVID-19 Cases in ONT Municipalities", title_font_color = "#CD6155")
+fig['layout']['xaxis1'].update(title = "Cumulative COVID-19 Cases in Ontario Schools", title_font_color = "#CD6155",
+                               showgrid = False, automargin = True, tickangle = 0)
+fig['layout']['xaxis3'].update(title = "Current Active COVID-19 Cases in ONT Municipalities", title_font_color = "#CD6155")
 #fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis3'].update(title = "Weekly Average COVID-19 Cases in ONT Schools", title_font_color = "#CD6155", tickangle = 0)
+fig['layout']['xaxis2'].update(title = "Weekly Average COVID-19 Cases in ONT Schools", title_font_color = "#CD6155", tickangle = 0)
 #fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
 
 
