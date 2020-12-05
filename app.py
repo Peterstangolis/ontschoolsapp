@@ -153,8 +153,9 @@ y_schools_w_cases = df_sum.loc[df_sum.index[-2], 'current_schools_w_cases']
 
 fig.add_trace(
     go.Indicator(
-        mode = 'number',
+        mode = 'number+delta',
         value = schools_w_cases,
+        delta = {'reference' : y_schools_w_cases},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools with Cases</span>"}),
     row = 1, col = 4
 )
@@ -165,7 +166,8 @@ value_yest = df_sum.loc[df_sum.index[-2], 'current_schools_closed']
 
 fig.add_trace(
     go.Indicator(
-        mode = 'number',
+        mode = 'number+delta',
+        delta = {'reference' : value_yest},
         value = value,
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools Closed</span>"}),
     row = 1, col = 5)
