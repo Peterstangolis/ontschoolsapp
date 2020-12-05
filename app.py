@@ -172,14 +172,16 @@ fig.add_trace(
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools Closed</span>"}),
     row = 1, col = 5)
 
-
+days_remain = 194 - df_sum.reported_date.count()
 fig.add_trace(
     go.Indicator(
         mode = "gauge+number",
         value = df_sum.reported_date.count(),
-        title = {'text': "<span style='font-size:0.8em; color:#5DADE2'> Schools Days Completed vs <br> Days in School Year</span>"},
-        gauge = {'axis' : { 'range' : [0, 195]},
-                    'threshold' : {'line' : {'color': "red", 'width' : 4}, 'thickness': 0.90, 'value' : 194}}
+        title = {'text': f"<span style='font-size:0.8em; color:#5DADE2'> Schools Days Completed <br> {days_remain} Left </span>"},
+        gauge = {
+            'axis' : { 'range' : [0, 195]},
+            'bar' : {'color' : '#5DADE2'},
+            'threshold' : {'line' : {'color': "red", 'width' : 4}, 'thickness': 0.90, 'value' : 194}}
 
     ),
     row = 5, col = 5
@@ -201,7 +203,8 @@ fig.add_trace(
     go.Bar(y = df_municiaplity_now["total_confirmed_cases"], x = df_municiaplity_now["municipality"],
            marker_color= colors,
            text = df_municiaplity_now['total_confirmed_cases'],
-          textposition = 'outside'),
+           textposition = 'outside'
+           ),
     row = 4, col = 1
 )
 
@@ -218,14 +221,14 @@ fig.add_trace(
 
 
 fig.update_layout(
-    template = "plotly_dark",
+    template = 'plotly_dark',
     title_font_color = '#CD6155',
     showlegend = False,
     yaxis_title = "CASES",
     font = dict(
             family = "Arial",
             size = 16),
-    margin = dict( pad = 2)
+    margin = dict( pad = 2),
 
 )
 
@@ -236,11 +239,11 @@ fig.update_xaxes(
 fig.update_yaxes(
     showgrid = True, gridcolor = "lightgrey")
 
-fig['layout']['yaxis1'].update(automargin = True)
-fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
-fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
+fig['layout']['yaxis1'].update(gridcolor = 'grey', gridwidth = 0.5, zerolinecolor = 'grey', tickvals = [0, 1000, 2000, 3000, 4000, 5000])
+fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False, zerolinecolor = 'grey')
+fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False, zerolinecolor = 'grey')
 fig['layout']['xaxis1'].update(title = "Cumulative COVID-19 Cases in Ontario Schools", title_font_color = "#CD6155",
-                               showgrid = False, automargin = True, tickangle = 0)
+                               showgrid = False, tickangle = 0, fixedrange = True)
 fig['layout']['xaxis3'].update(title = "Current Active COVID-19 Cases in ONT Municipalities", title_font_color = "#CD6155")
 #fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
 fig['layout']['xaxis2'].update(title = "Weekly Average COVID-19 Cases in ONT Schools", title_font_color = "#CD6155", tickangle = 0)
@@ -251,7 +254,7 @@ app = dash.Dash(__name__)
 server = app.server
 
 app.layout = html.Div(style = {'textAlign': 'Center'}, children = [
-    html.H1(children = "ONTARIO COVID-19 CASES in SCHOOLS"),
+    html.H1(children = "COVID-19 CASES in  ONTARIO SCHOOLS"),
     html.H2(children = f"Updated: {max(df_sum.reported_date).date()}"),
 
     dcc.Graph(
