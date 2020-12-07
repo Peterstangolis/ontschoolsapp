@@ -249,7 +249,7 @@ fig.update_layout(
     yaxis_title = "CASES",
     font = dict(
             family = "Arial",
-            size = 16),
+            size = 14),
     margin = dict( pad = 2)
 
 )
