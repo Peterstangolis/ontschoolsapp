@@ -7,11 +7,13 @@ from plotly.subplots import make_subplots
 
 import pandas as pd
 from datetime import datetime
+from datetime import timedelta
 
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+
 
 # Import the Data sets:
 
@@ -249,7 +251,7 @@ fig.update_layout(
     yaxis_title = "CASES",
     font = dict(
             family = "Arial",
-            size = 14),
+            size = 12),
     margin = dict( pad = 2)
 
 )
@@ -265,11 +267,11 @@ fig['layout']['yaxis1'].update(automargin = True, range = [0, 5500])
 fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False, range = [0, 200])
 fig['layout']['yaxis4'].update(showgrid=False, showticklabels = False, range = [0, 700])
 fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis1'].update(title = "Cumulative COVID-19 Cases <br>in Ontario Schools", title_font_color = "#CD6155",
+fig['layout']['xaxis1'].update(title = "Cumulative COVID-19 Cases in Ontario Schools", title_font_color = "#CD6155",
                                showgrid = False, automargin = True, tickangle = 0)
 fig['layout']['xaxis4'].update(title = F"Currently Active COVID-19 Cases in Ontario Municipalities <br><b> {max(df_sum.reported_date).date()}", title_font_color = "#CD6155")
 #fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis2'].update(title = "Weekly Average COVID-19 Cases <br>in Ontario Schools", title_font_color = "#CD6155",
+fig['layout']['xaxis2'].update(title = "Weekly Average COVID-19 Cases in Ontario Schools", title_font_color = "#CD6155",
                                tickangle = 0)
 fig['layout']['xaxis3'].update(showgrid=False, showticklabels = False, range = [0, 80],
                               title = "Top 10 Ontario Schools with Active COVID-19 Cases", title_font_color = "#CD6155",
@@ -278,14 +280,14 @@ fig['layout']['xaxis3'].update(showgrid=False, showticklabels = False, range = [
 # Add annotations to Top 10 BarH
 annotations = []
 annotations.append(dict(xref = 'x3', yref = 'y3',
-                    y = top_10_schools.iloc[0, 1], x = top_10_schools.iloc[0, 2] + 15,
+                    y = top_10_schools.iloc[0, 1], x = top_10_schools.iloc[0, 2] + 18,
                     text = top_10_schools.iloc[0, 1],
                     font = dict(family = 'Arial', size = 9),
                     showarrow = False))
 for i, t in enumerate(top_10_schools["School"]):
     if i < len(top_10_schools)-1:
         annotations.append(dict(xref = 'x3', yref='y3',
-                             y = top_10_schools.iloc[i+1, 1], x = 60,
+                             y = top_10_schools.iloc[i+1, 1], x = 63,
                              text = top_10_schools.iloc[i+1, 1],
                              font = dict(family = 'Arial', size = 9),
                              showarrow = False
@@ -294,17 +296,15 @@ for i, t in enumerate(top_10_schools["School"]):
 
 
 annotations.append(dict(xref = 'x1', yref = 'y1',
-                  x = max(df_sum.reported_date), y = max(df_sum.cumulative_school_related_cases),
+                  x = max(df_sum.reported_date) + timedelta(days=5)  , y = max(df_sum.cumulative_school_related_cases) - 200,
                   text = max(df_sum.cumulative_school_related_cases),
-                  showarrow = True,
-                  arrowhead = 2,
+                  showarrow = False,
                   font = dict(
                       size = 16,
-                      color = "white"
-                  ),
-                  arrowcolor = "darkred",
-                  bordercolor = 'darkred')
-                  )
+                      color = "white"),
+                bordercolor = 'cornflowerblue',
+                bgcolor = 'cornflowerblue'
+                  ))
 
 fig.update_layout(annotations = annotations)
 
