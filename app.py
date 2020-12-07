@@ -33,6 +33,11 @@ df_active["reported_date"] = pd.to_datetime(df_active["reported_date"])
 ## Drop collected_date from Active data set
 df_active.drop("collected_date", axis=1, inplace=True)
 
+# Change the name of one catholique elementary school
+cass = df_active[df_active.school.str.contains('taire catholique de Casselman')]
+cass_index = cass.index
+df_active.at[cass_index, 'school'] = 'Catholic Elementary School de Casselman'
+
 ## Filter the Active Cases Data set for the last_reported date
 df_active_now = df_active[df_active.reported_date == max(df_active.reported_date)]
 
@@ -82,7 +87,7 @@ fig = make_subplots(
         rows = 5, cols = 6,
         specs = [
                     [ {"type": "indicator"}, {"type": "indicator"}, {"type": "indicator"}, {"type" : "indicator"}, {"type" : "indicator"}, {"type" : "indicator"} ],
-                    [ {"type" : "scatter", "rowspan": 2, "colspan" : 3}, None, None, {"type" : "bar", "rowspan" : 2, "colspan" : 3}, None, None],
+                    [ {"type" : "scatter", "rowspan": 2, "colspan" : 2}, None, {"type" : "bar", "rowspan" : 2, "colspan" : 2}, None, {"type" : "bar", "rowspan" : 2, "colspan":2}, None],
                     [  None, None, None, None, None, None],
                     [{"type" : "bar", "rowspan": 2, "colspan" : 4}, None, None, None, None, None],
                     [  None, None, None, None, {"type": "indicator", "rowspan" : 1, "colspan" : 2}, None],
@@ -102,16 +107,7 @@ fig.add_trace(
         row = 2, col = 1
      )
 
-fig.add_annotation(x = max(df_sum.reported_date), y = max(df_sum.cumulative_school_related_cases),
-                  text = max(df_sum.cumulative_school_related_cases),
-                  showarrow = True,
-                  arrowhead = 2,
-                  font = dict(
-                      size = 16,
-                      color = "white"
-                  ),
-                  arrowcolor = "darkred",
-                  bordercolor = 'darkred')
+
 
 #fig.update_layout(
 #        title = f"Cumulative COVID-19 Cases in Students, Staff & Total <br> Report Updated: {first_reported_date }",
@@ -172,6 +168,7 @@ fig.add_trace(
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools Closed</span>"}),
     row = 1, col = 5)
 
+
 days_remain = 194 - df_sum.reported_date.count()
 fig.add_trace(
     go.Indicator(
@@ -216,19 +213,43 @@ fig.add_trace(
                   marker_color = colors_two,
                   text = df_weekly["Weekly Average COVID-19 Cases"],
                   textposition = 'outside'),
-    row = 2, col = 4
+    row = 2, col = 3
 )
 
+# Top 10 Schools with Active CASES
+top_10_schools = df_active_now.groupby('school')['total_confirmed_cases'].sum().reset_index().sort_values(by = "total_confirmed_cases", ascending = False).head(11)
+top_10_schools = top_10_schools.drop([top_10_schools.index[2]])
+top_10_schools = top_10_schools.rename({"total_confirmed_cases" : "Active Cases", "school": "School"}, axis = 1)
+top_10_schools.reset_index(inplace = True)
+colors = ['#5DADE2',] * len(top_10_schools)
+colors[0] = '#F5B7B1'
+
+fig.add_trace(
+            go.Bar(x = top_10_schools["Active Cases"], y = top_10_schools["School"],
+                orientation='h',
+                marker_color = colors,
+                text = top_10_schools["Active Cases"],
+                textposition = 'outside'
+                  ),
+    row = 2, col = 5
+)
+####################################  UPDATE LAYOUT ########################################################
 
 fig.update_layout(
-    template = 'plotly_dark',
+    template = "plotly_dark",
+    #title = {
+    #    'text' : f"ONTARIO COVID-19 CASES in SCHOOLS\n <b>(Updated: {max(df_sum.reported_date).date()} )",
+    #    'x' : 0.04,
+    #    'y' : 0.97,
+    #    'xanchor' : 'left'},
+    title_x = 0.05,
     title_font_color = '#CD6155',
     showlegend = False,
     yaxis_title = "CASES",
     font = dict(
             family = "Arial",
             size = 16),
-    margin = dict( pad = 2),
+    margin = dict( pad = 2)
 
 )
 
@@ -239,15 +260,44 @@ fig.update_xaxes(
 fig.update_yaxes(
     showgrid = True, gridcolor = "lightgrey")
 
-fig['layout']['yaxis1'].update(gridcolor = 'grey', gridwidth = 0.5, zerolinecolor = 'grey', tickvals = [0, 1000, 2000, 3000, 4000, 5000])
-fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False, zerolinecolor = 'grey')
-fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False, zerolinecolor = 'grey')
+fig['layout']['yaxis1'].update(automargin = True)
+fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False, range = [0, 200])
+fig['layout']['yaxis4'].update(showgrid=False, showticklabels = False, range = [0, 600])
+fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
 fig['layout']['xaxis1'].update(title = "Cumulative COVID-19 Cases in Ontario Schools", title_font_color = "#CD6155",
-                               showgrid = False, tickangle = 0, fixedrange = True)
-fig['layout']['xaxis3'].update(title = "Current Active COVID-19 Cases in ONT Municipalities", title_font_color = "#CD6155")
+                               showgrid = False, automargin = True, tickangle = 0)
+fig['layout']['xaxis4'].update(title = F"Current Active COVID-19 Cases in ONT Municipalities <br><b> {max(df_sum.reported_date).date()}", title_font_color = "#CD6155")
 #fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis2'].update(title = "Weekly Average COVID-19 Cases in ONT Schools", title_font_color = "#CD6155", tickangle = 0)
-#fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
+fig['layout']['xaxis2'].update(title = "Weekly Average COVID-19 Cases in ONT Schools", title_font_color = "#CD6155",
+                               tickangle = 0)
+fig['layout']['xaxis3'].update(showgrid=False, showticklabels = False, range = [0, 70],
+                              title = "Top 10 Ontario Schools with Active COVID-19 Cases", title_font_color = "#CD6155")
+
+# Add annotations to Top 10 BarH
+annotations = []
+for i, t in enumerate(top_10_schools["School"]):
+    annotations.append(dict(xref = 'x3', yref='y3',
+                         y = top_10_schools.iloc[i, 1], x = top_10_schools.iloc[i, 2] + 15,
+                         text = top_10_schools.iloc[i, 1],
+                         font = dict(family = 'Arial', size = 9),
+                         showarrow = False
+                         )
+    )
+
+
+annotations.append(dict(xref = 'x1', yref = 'y1',
+                  x = max(df_sum.reported_date), y = max(df_sum.cumulative_school_related_cases),
+                  text = max(df_sum.cumulative_school_related_cases),
+                  showarrow = True,
+                  arrowhead = 2,
+                  font = dict(
+                      size = 16,
+                      color = "white"
+                  ),
+                  arrowcolor = "darkred",
+                  bordercolor = 'darkred')
+                  )
+fig.update_layout(annotations = annotations)
 
 
 app = dash.Dash(__name__)
