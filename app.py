@@ -81,7 +81,7 @@ reference_staff = df_sum.loc[df_sum.index[-2], 'new_school_related_staff_cases']
 
 # Schools with 5 or more cases
 df_schools_total_active_now = df_active_now.groupby(["municipality","school"])['total_confirmed_cases'].sum().reset_index().sort_values(by = "total_confirmed_cases", ascending = False)
-schools_w_five_or_more = df_schools_total_active_now[df_schools_total_active_now.total_confirmed_cases >= 5].school.count()
+schools_w_two_or_more = df_schools_total_active_now[df_schools_total_active_now.total_confirmed_cases >= 2].school.count()
 
 
 #### CREATE THE DASHBOARD ####
@@ -120,7 +120,7 @@ fig.add_trace(
         value = value_t,
         delta = {'reference': reference_t},
         mode = "number+delta",
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Total Cases</span>"},
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Reported Cases Today</span>"},
         domain = {'row': 0, 'column': 0}
     ),
     row = 1, col = 1
@@ -141,7 +141,7 @@ fig.add_trace(
         mode = "number+delta",
         value = value_staff,
         delta = {"reference": reference_staff},
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Staff cases</span>"},
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Staff Cases</span>"},
         domain = {'row': 0, 'column': 1}),
     row = 1, col = 3
 )
@@ -154,7 +154,7 @@ fig.add_trace(
         mode = 'number+delta',
         value = schools_w_cases,
         delta = {'reference' : y_schools_w_cases},
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools with Cases</span>"}),
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools with Active Cases</span>"}),
     row = 1, col = 4
 )
 
@@ -176,7 +176,7 @@ fig.add_trace(
     go.Indicator(
         mode = "gauge+number",
         value = df_sum.reported_date.count(),
-        title = {'text': f"<span style='font-size:0.8em; color:#5DADE2'> Schools Days Completed <br> {days_remain} Left </span>"},
+        title = {'text': f"<span style='font-size:0.6em; color:#5DADE2'> Schools Days Completed: {days_remain} To Go </span>"},
         gauge = {
             'axis' : { 'range' : [0, 195]},
             'bar' : {'color' : '#5DADE2'},
@@ -190,8 +190,8 @@ fig.add_trace(
 fig.add_trace(
     go.Indicator(
         mode = 'number',
-        value = schools_w_five_or_more,
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools with 5 or more cases</span>"}),
+        value = schools_w_two_or_more,
+        title = {"text" : " <br><span style = 'font-size: 0.6em; color:#5DADE2'>Schools with at least 2 <br>Active Cases</span>"}),
     row = 1, col = 6)
 
 
