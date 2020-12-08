@@ -278,7 +278,7 @@ fig.update_yaxes(
     showgrid = True, gridcolor = "lightgrey")
 
 fig['layout']['yaxis1'].update(automargin = True, range = [0, 5900])
-fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False, range = [0, 200])
+fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False, range = [0, 300])
 fig['layout']['yaxis4'].update(showgrid=False, showticklabels = False, range = [0, 700])
 fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
 fig['layout']['xaxis1'].update(title = "Cumulative COVID-19 Cases in Ontario Schools", title_font_color = "lightgrey",
@@ -296,14 +296,14 @@ annotations = []
 annotations.append(dict(xref = 'x3', yref = 'y3',
                     y = top_10_schools.iloc[0, 1], x = 63,
                     text = top_10_schools.iloc[0, 1],
-                    font = dict(family = 'Arial', size = 9),
+                    font = dict(family = 'Arial', size = 10),
                     showarrow = False))
 for i, t in enumerate(top_10_schools["School"]):
     if i < len(top_10_schools)-1:
         annotations.append(dict(xref = 'x3', yref='y3',
                              y = top_10_schools.iloc[i+1, 1], x = 63,
                              text = top_10_schools.iloc[i+1, 1],
-                             font = dict(family = 'Arial', size = 9),
+                             font = dict(family = 'Arial', size = 11),
                              showarrow = False
                              )
         )
@@ -324,23 +324,27 @@ fig.update_layout(annotations = annotations)
 
 
 app = dash.Dash(__name__)
+
+app.title = "ONT School COVID-19 Dashboard"
 server = app.server
 
-app.layout = html.Div(style = {'backgroundColor':'#711411'}, children = [
+app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verdana'}, children = [
     html.H1(children = "COVID-19 CASES in  ONTARIO SCHOOLS",
             style = {
                 'textAlign' : 'center',
                 'color' : 'lightgrey',
-                'padding-top' : '30px',
+                'padding-top' : '25px',
                 'padding-bottom' : '0px',
-                'font-size' : '60px'
+                'font-size' : '50px',
+                'height' : '70px'
             }),
-    html.H2(children = f"Updated: {max(df_sum.reported_date).date()}",
+    html.H4(children = f"Updated: {max(df_sum.reported_date).date()}",
             style = {
                 'textAlign' : 'center',
-                'color' : 'cornflowerblue',
+                'color' : '#5DADE2',
                 'padding-top' : '0px',
-                'font-size' : '25px'
+                'font-size' : '25px',
+                'height' : '20px'
             }),
 
     dcc.Graph(
