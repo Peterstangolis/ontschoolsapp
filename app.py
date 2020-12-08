@@ -40,12 +40,23 @@ cass = df_active[df_active.school.str.contains('taire catholique de Casselman')]
 cass_index = cass.index
 df_active.at[cass_index, 'school'] = 'Catholic Elementary School de Casselman'
 
+cole = df_active[df_active["school"].str.contains('Ãcole Ã©lÃ©mentaire catholique Saint-Isidore')]
+cole_index = cole.index
+df_active.at[cole_index, 'school'] = 'Saint-Isidore Catholic Elementary School'
+
+
+
 ## Filter the Active Cases Data set for the last_reported date
 df_active_now = df_active[df_active.reported_date == max(df_active.reported_date)]
 
+#Drop Board Site from active_now:
+board_site_index = df_active_now[df_active_now.school.str.contains('Board Site')].index
+if len(board_site_index) > 0:
+    df_active_now = df_active_now.drop(board_site_index)
+
 
 ## Group the active_now data set by municipality
-df_municiaplity_now = df_active_now.groupby("municipality")['total_confirmed_cases'].sum().reset_index().sort_values(by=["total_confirmed_cases"], ascending=False).head(30)
+df_municipality_now = df_active_now.groupby("municipality")['total_confirmed_cases'].sum().reset_index().sort_values(by=["total_confirmed_cases"], ascending=False).head(30)
 
 
 ## Set the index of the summary data set to the reported_date column
@@ -104,7 +115,8 @@ fig.add_trace(
         x = df_sum['reported_date'],
         y = df_sum['cumulative_school_related_cases'],
         mode = 'lines+markers',
-        marker = dict(color = '#5DADE2')
+        marker = dict(size = 5,
+                      line = dict( width = 1.2, color = '#5DADE2'))
        ),
         row = 2, col = 1
      )
@@ -195,13 +207,13 @@ fig.add_trace(
     row = 1, col = 6)
 
 
-colors = ['#5DADE2',] * len(df_municiaplity_now)
+colors = ['#5DADE2',] * len(df_municipality_now)
 colors[0] = 'crimson'
 
 fig.add_trace(
-    go.Bar(y = df_municiaplity_now["total_confirmed_cases"], x = df_municiaplity_now["municipality"],
+    go.Bar(y = df_municipality_now["total_confirmed_cases"], x = df_municipality_now["municipality"],
            marker_color= colors,
-           text = df_municiaplity_now['total_confirmed_cases'],
+           text = df_municipality_now['total_confirmed_cases'],
            textposition = 'outside'
            ),
     row = 4, col = 1
@@ -218,9 +230,11 @@ fig.add_trace(
     row = 2, col = 3
 )
 
-# Top 10 Schools with Active CASES
+
+
+
+# Top Schools with Active CASES
 top_10_schools = df_active_now.groupby('school')['total_confirmed_cases'].sum().reset_index().sort_values(by = "total_confirmed_cases", ascending = False).head(11)
-top_10_schools = top_10_schools.drop([top_10_schools.index[2]])
 top_10_schools = top_10_schools.rename({"total_confirmed_cases" : "Active Cases", "school": "School"}, axis = 1)
 top_10_schools.reset_index(inplace = True)
 colors = ['#5DADE2',] * len(top_10_schools)
@@ -263,24 +277,24 @@ fig.update_xaxes(
 fig.update_yaxes(
     showgrid = True, gridcolor = "lightgrey")
 
-fig['layout']['yaxis1'].update(automargin = True, range = [0, 5500])
+fig['layout']['yaxis1'].update(automargin = True, range = [0, 5900])
 fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False, range = [0, 200])
 fig['layout']['yaxis4'].update(showgrid=False, showticklabels = False, range = [0, 700])
 fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis1'].update(title = "Cumulative COVID-19 Cases in Ontario Schools", title_font_color = "#CD6155",
+fig['layout']['xaxis1'].update(title = "Cumulative COVID-19 Cases in Ontario Schools", title_font_color = "lightgrey",
                                showgrid = False, automargin = True, tickangle = 0)
-fig['layout']['xaxis4'].update(title = F"Currently Active COVID-19 Cases in Ontario Municipalities <br><b> {max(df_sum.reported_date).date()}", title_font_color = "#CD6155")
+fig['layout']['xaxis4'].update(title = F"Currently Active COVID-19 Cases in Ontario Municipalities <br><b> {max(df_sum.reported_date).date()}", title_font_color = "lightgrey")
 #fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis2'].update(title = "Weekly Average COVID-19 Cases in Ontario Schools", title_font_color = "#CD6155",
+fig['layout']['xaxis2'].update(title = "Weekly Average COVID-19 Cases in Ontario Schools", title_font_color = "lightgrey",
                                tickangle = 0)
 fig['layout']['xaxis3'].update(showgrid=False, showticklabels = False, range = [0, 80],
-                              title = "Top 10 Ontario Schools with Active COVID-19 Cases", title_font_color = "#CD6155",
+                              title = "Top Ontario Schools with Active COVID-19 Cases", title_font_color = "lightgrey",
                               )
 
 # Add annotations to Top 10 BarH
 annotations = []
 annotations.append(dict(xref = 'x3', yref = 'y3',
-                    y = top_10_schools.iloc[0, 1], x = top_10_schools.iloc[0, 2] + 18,
+                    y = top_10_schools.iloc[0, 1], x = 63,
                     text = top_10_schools.iloc[0, 1],
                     font = dict(family = 'Arial', size = 9),
                     showarrow = False))
