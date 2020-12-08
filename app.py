@@ -326,7 +326,7 @@ fig.update_layout(annotations = annotations)
 app = dash.Dash(__name__)
 server = app.server
 
-app.layout = html.Div(style = {'backgroundColor':'#922B21'}, children = [
+app.layout = html.Div(style = {'backgroundColor':'#711411'}, children = [
     html.H1(children = "COVID-19 CASES in  ONTARIO SCHOOLS",
             style = {
                 'textAlign' : 'center',
