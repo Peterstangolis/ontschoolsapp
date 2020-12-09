@@ -98,7 +98,6 @@ schools_w_two_or_more = df_schools_total_active_now[df_schools_total_active_now.
 #### CREATE THE DASHBOARD ####
 fig = make_subplots(
         rows = 5, cols = 6,
-        subplot_titles = ("","","","","","","Cumulative COVID-19 Cases in Ontario Schools","Weekly Average COVID-19 Cases in Ontario Schools","Top Ontario Schools with Active COVID-19 Cases"),
         specs = [
                     [ {"type": "indicator"}, {"type": "indicator"}, {"type": "indicator"}, {"type" : "indicator"}, {"type" : "indicator"}, {"type" : "indicator"} ],
                     [ {"type" : "scatter", "rowspan": 2, "colspan" : 2}, None, {"type" : "bar", "rowspan" : 2, "colspan" : 2}, None, {"type" : "bar", "rowspan" : 2, "colspan":2}, None],
@@ -133,7 +132,6 @@ fig.add_trace(
         value = value_t,
         delta = {'reference': reference_t},
         mode = "number+delta",
-        number = {"font" : {"size" : 80}},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Reported Cases Today</span>"},
         domain = {'row': 0, 'column': 0}
     ),
@@ -145,7 +143,6 @@ fig.add_trace(
         value = value_student,
         delta = {'reference': reference_student, 'relative': False},
         mode = "number+delta",
-        number = {"font" : {"size" : 80}},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Student Cases</span>"},
         domain = {'row': 0, 'column': 2}),
      row = 1, col = 2
@@ -156,7 +153,6 @@ fig.add_trace(
         mode = "number+delta",
         value = value_staff,
         delta = {"reference": reference_staff},
-        number = {"font" : {"size" : 80}},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Staff Cases</span>"},
         domain = {'row': 0, 'column': 1}),
     row = 1, col = 3
@@ -170,7 +166,6 @@ fig.add_trace(
         mode = 'number+delta',
         value = schools_w_cases,
         delta = {'reference' : y_schools_w_cases},
-        number = {"font" : {"size" : 80}},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools with Active Cases</span>"}),
     row = 1, col = 4
 )
@@ -184,7 +179,6 @@ fig.add_trace(
         mode = 'number+delta',
         delta = {'reference' : value_yest},
         value = value,
-        number = {"font" : {"size" : 80}},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools Closed</span>"}),
     row = 1, col = 5)
 
@@ -194,8 +188,7 @@ fig.add_trace(
     go.Indicator(
         mode = "gauge+number",
         value = df_sum.reported_date.count(),
-        title = {'text': f"<span style='font-size:0.8em; color:#5DADE2'> Schools Days Completed: {days_remain} To Go </span>"},
-        number = {"font" : {"size" : 80}},
+        title = {'text': f"<span style='font-size:0.6em; color:#5DADE2'> Schools Days Completed: {days_remain} To Go </span>"},
         gauge = {
             'axis' : { 'range' : [0, 195]},
             'bar' : {'color' : '#5DADE2'},
@@ -210,9 +203,7 @@ fig.add_trace(
     go.Indicator(
         mode = 'number',
         value = schools_w_two_or_more,
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools with at least 2 <br>Active Cases</span>"},
-        number = {"font" : {"size" : 80}}
-    ),
+        title = {"text" : " <br><span style = 'font-size: 0.6em; color:#5DADE2'>Schools with at least 2 <br>Active Cases</span>"}),
     row = 1, col = 6)
 
 
@@ -271,10 +262,10 @@ fig.update_layout(
     title_x = 0.05,
     title_font_color = '#CD6155',
     showlegend = False,
-    yaxis_title = "Cumulative Cases",
+    yaxis_title = "CASES",
     font = dict(
             family = "Arial",
-            size = 13),
+            size = 12),
     margin = dict( pad = 2)
 
 )
@@ -290,16 +281,15 @@ fig['layout']['yaxis1'].update(automargin = True, range = [0, 5900])
 fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False, range = [0, 300])
 fig['layout']['yaxis4'].update(showgrid=False, showticklabels = False, range = [0, 700])
 fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis1'].update(title = "Reported Date", title_font_color = "lightgrey",
+fig['layout']['xaxis1'].update(title = "Cumulative COVID-19 Cases in Ontario Schools", title_font_color = "lightgrey",
                                showgrid = False, automargin = True, tickangle = 0)
-fig['layout']['xaxis4'].update(title = "Top 30 Ontario Municipalities", title_font_color = "lightgrey")
+fig['layout']['xaxis4'].update(title = F"Currently Active COVID-19 Cases in Ontario Municipalities <br><b> {max(df_sum.reported_date).date()}", title_font_color = "lightgrey")
 #fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis2'].update(title = "Week", title_font_color = "lightgrey",
+fig['layout']['xaxis2'].update(title = "Weekly Average COVID-19 Cases in Ontario Schools", title_font_color = "lightgrey",
                                tickangle = 0)
 fig['layout']['xaxis3'].update(showgrid=False, showticklabels = False, range = [0, 80],
-                              title = "Case Number  & Associated School", title_font_color = "lightgrey",
+                              title = "Top Ontario Schools with Active COVID-19 Cases", title_font_color = "lightgrey",
                               )
-
 
 # Add annotations to Top 10 BarH
 annotations = []
@@ -330,16 +320,6 @@ annotations.append(dict(xref = 'x1', yref = 'y1',
                 bgcolor = 'cornflowerblue'
                   ))
 
-annotations.append(dict(xref = 'x4', yref = 'y4',
-                    y = max(df_municipality_now.iloc[:,1])-20,
-                    x = "Oakville",
-                    text = F"Currently Active COVID-19 Cases in Ontario Municipalities <br><b> {max(df_sum.reported_date).date()}",
-                    showarrow = False,
-                    font = dict(
-                            size = 16,
-                            color = 'lightgrey'),
-                    ) )
-
 fig.update_layout(annotations = annotations)
 
 
@@ -361,18 +341,14 @@ app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verd
     html.H4(children = f"Updated: {max(df_sum.reported_date).date()}",
             style = {
                 'textAlign' : 'center',
-                'color' : 'lightgrey',
+                'color' : '#5DADE2',
                 'padding-top' : '0px',
                 'font-size' : '25px',
                 'height' : '20px'
             }),
 
     dcc.Graph(
-        style = {'height':"100vh",
-                 'margin-bottom' : '40px',
-                 'margin-left' : '20px',
-                 'margin-right' : '20px',
-                 'margin-top' : '20px'},
+        style = {'height':"100vh"},
         figure = fig,
     )
 ])
