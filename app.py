@@ -330,12 +330,12 @@ for i, t in enumerate(top_10_schools["School"]):
 
 
 annotations.append(dict(xref = 'x1', yref = 'y1',
-                  x = max(df_sum.reported_date) + timedelta(days=5)  , y = max(df_sum.cumulative_school_related_cases) - 200,
+                  x = max(df_sum.reported_date) + timedelta(days=6)  , y = max(df_sum.cumulative_school_related_cases) - 200,
                   text = max(df_sum.cumulative_school_related_cases),
                   showarrow = False,
                   font = dict(
                       size = 18,
-                      color = "black"),
+                      color = "white"),
                 bordercolor = 'crimson',
                 bgcolor = 'crimson'
                   ))
@@ -354,8 +354,12 @@ annotations.append(dict(xref = 'x4', yref = 'y4',
 
 fig.update_layout(annotations = annotations)
 
+######************************* PLOT BEGINS: ********************************######
 
-app = dash.Dash(__name__)
+# Boostrap CSS
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.title = "ONT School COVID-19 Dashboard"
 server = app.server
@@ -367,16 +371,25 @@ app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verd
                 'color' : 'lightgrey',
                 'padding-top' : '25px',
                 'padding-bottom' : '0px',
-                'font-size' : '50px',
-                'height' : '70px'
+                'font-size' : '60px',
+                'height' : '70px',
+                'line-height': 1.2,
+                'margin-top' : '30px',
+                'font-weight' : 'bold'
             }),
-    html.H4(children = f"Updated: {max(df_sum.reported_date).date()}",
+
+    #title = {'text': f"<span style='font-size:0.8em; color:#294C63'> Schools Days Completed:<br> {days_remain} To Go </span>"},
+    html.H5(children =   f"Updated: {max(df_sum.reported_date).date()}",
             style = {
                 'textAlign' : 'center',
+                'color' : '#5DADE2',
                 'color' : 'lightgrey',
                 'padding-top' : '0px',
                 'font-size' : '25px',
-                'height' : '20px'
+                'height' : '20px',
+                'line-height': 1.1,
+                'font-weight' : 'bold'
+                #'background-color' : 'lightblue'
             }),
 
     dcc.Graph(
@@ -386,8 +399,43 @@ app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verd
                  'margin-right' : '20px',
                  'margin-top' : '20px'},
         figure = fig,
-    )
-],)
+    ),
+    # html.P(children = '"Source:" <a ref> "https://data.ontario.ca/dataset/summary-of-cases-in-schools" target="_blank">  Schools COVID-19 Data</a>',
+    #                   style = {
+    #                       'textAlign' : 'right',
+    #                       'color' : 'lightgrey',
+    #                       'font' : 'Lucida Handwriting',
+    #                       'font-size' : '13',
+    #                       'font-style' : 'italic',
+    #                       'font-weight' : 'bold',
+    #                       'margin-bottom' : '10px',
+    #                       'margin-left' : '10x'
+    #                   }),
+
+    html.Footer("Created By: Peter Stangolis",
+                 style = {
+                     'textAlign' : 'left',
+                     'color' : 'lightgrey',
+                     'font' : 'Lucida Handwriting',
+                     'font-size' : '13',
+                     'font-style' : 'italic',
+                     'font-weight' : 'bold',
+                     'margin-bottom' : '10px',
+                     'margin-left' : '30px'
+                 }),
+
+    dcc.Markdown('''
+            [Data Source:]("https://data.ontario.ca/dataset/summary-of-cases-in-schools")
+            ''',
+            style = {
+                'textAlign' : 'left',
+                'color' : 'lightgrey',
+                'font-stye' : 'italic',
+                'margin-left' : '30px'
+            }
+            ),
+], className = 'ten columns offset-by-one'
+)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
