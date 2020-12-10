@@ -230,7 +230,7 @@ colors[0] = 'crimson'
 
 fig.add_trace(
     go.Bar(y = df_municipality_now["total_confirmed_cases"], x = df_municipality_now["municipality"],
-           marker_color= colors,
+            marker = dict(color = df_municipality_now["total_confirmed_cases"], coloraxis="coloraxis"),
            text = df_municipality_now['total_confirmed_cases'],
            textposition = 'outside'
            ),
@@ -243,7 +243,7 @@ df_weekly.rename(columns= {"index" : "Start of Week", "new_total_school_related_
 
 fig.add_trace(
             go.Bar(y = df_weekly["Weekly Average COVID-19 Cases"], x = df_weekly["Start of Week"],
-                  marker_color = colors_two,
+                   marker = dict(color = df_municipality_now["total_confirmed_cases"], coloraxis="coloraxis"),
                   text = df_weekly["Weekly Average COVID-19 Cases"],
                   textposition = 'outside'),
     row = 2, col = 3
@@ -320,8 +320,8 @@ fig.update_layout(
 #     showgrid = True, gridcolor = "lightgrey")
 
 fig['layout']['yaxis1'].update(automargin = True, range = [0, 6500], showgrid = True, gridcolor = 'lightgrey')
-fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False, range = [0, 300])
-fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False, range = [0, 800])
+fig['layout']['yaxis2'].update(showgrid=True, showticklabels = False, range = [0, 300])
+fig['layout']['yaxis3'].update(showgrid=True, showticklabels = True, range = [0, 700])
 #fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
 fig['layout']['xaxis1'].update(showgrid = False, automargin = False, tickangle = 0)
 fig['layout']['xaxis3'].update(tickangle = -45, title = "Top 30 Municipalities")
