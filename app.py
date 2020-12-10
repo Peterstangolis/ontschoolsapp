@@ -136,7 +136,7 @@ fig.add_trace(
         delta = {'reference': reference_t, 'increasing' : {'color' : '#5DADE2' }, 'decreasing' : {'color' : 'crimson' }},
         mode = "number+delta",
         number = {"font" : {"size" : 70}},
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Reported Cases Today</span>"},
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Reported Cases</span>"},
         domain = {'row': 0, 'column': 0}
     ),
     row = 1, col = 1
@@ -148,7 +148,7 @@ fig.add_trace(
         delta = {'reference': reference_student, 'increasing' : {'color' : '#5DADE2' }, 'decreasing' : {'color' : 'crimson' }},
         mode = "number+delta",
         number = {"font" : {"size" : 70}},
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Student Cases</span>"},
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Student Cases</span>"},
         domain = {'row': 0, 'column': 2}),
      row = 1, col = 2
 )
@@ -159,7 +159,7 @@ fig.add_trace(
         value = value_staff,
         delta = {"reference": reference_staff, 'increasing' : {'color' : '#5DADE2' }, 'decreasing' : {'color' : 'crimson' }},
         number = {"font" : {"size" : 70}},
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Staff Cases</span>"},
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Staff Cases</span>"},
         domain = {'row': 0, 'column': 1}),
     row = 1, col = 3
 )
@@ -173,7 +173,7 @@ fig.add_trace(
         value = schools_w_cases,
         delta = {'reference' : y_schools_w_cases, 'increasing' : {'color' : '#5DADE2' }},
         number = {"font" : {"size" : 70}},
-        title = {"text" : " <br><span style = 'font-size: medium; color:#5DADE2'>Schools with Active Cases</span>"}),
+        title = {"text" : " <br><span style = 'font-size: medium; color:#294C63'>Schools with Active Cases</span>"}),
     row = 1, col = 4
 )
 
@@ -187,7 +187,7 @@ fig.add_trace(
         delta = {'reference' : value_yest, 'increasing' : {'color' : '#5DADE2' }},
         value = value,
         number = {"font" : {"size" : 70}},
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools Closed</span>"},
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Schools Closed</span>"},
         domain = {'x' : [0, 1], 'y' : [0,1]}),
     row = 1, col = 5)
 
@@ -197,7 +197,7 @@ fig.add_trace(
     go.Indicator(
         mode = "gauge+number",
         value = df_sum.reported_date.count(),
-        title = {'text': f"<span style='font-size:0.8em; color:#5DADE2'> Schools Days Completed:<br> {days_remain} To Go </span>"},
+        title = {'text': f"<span style='font-size:0.8em; color:#294C63'> Schools Days Completed:<br> {days_remain} To Go </span>"},
         number = {"font" : {"size" : 60}},
         gauge = {
             'axis' : { 'range' : [0, 195]},
@@ -213,7 +213,7 @@ fig.add_trace(
     go.Indicator(
         mode = 'number',
         value = schools_w_two_or_more,
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#5DADE2'>Schools with at least 2 <br>Active Cases</span>"},
+        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Schools with at least 2 <br>Active Cases</span>"},
         number = {"font" : {"size" : 70}}
     ),
     row = 1, col = 6)
@@ -294,17 +294,18 @@ fig.update_yaxes(
 
 fig['layout']['yaxis1'].update(automargin = True, range = [0, 6500])
 fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False, range = [0, 300])
-fig['layout']['yaxis4'].update(showgrid=False, showticklabels = False, range = [0, 700])
+fig['layout']['yaxis4'].update(showgrid=False, showticklabels = False, range = [0, 700],
+                                title_text = "Active COVID-19 Cases")
 fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis1'].update(title = "Reported Date", title_font_color = "lightgrey",
+fig['layout']['xaxis1'].update(title = "Reported Date", title_font_color = "black",
                                showgrid = False, automargin = True, tickangle = 0)
-fig['layout']['xaxis4'].update(title = "Top 30 Ontario Municipalities", title_font_color = "lightgrey")
+fig['layout']['xaxis4'].update(title = "Top 30 Ontario Municipalities", title_font_color = "black")
 #fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis2'].update(title = "Week", title_font_color = "lightgrey",
+fig['layout']['xaxis2'].update(title = "Week", title_font_color = "black",
                                tickangle = 0)
 fig['layout']['xaxis3'].update(showgrid=False, showticklabels = False, range = [0, 80],
                               title_text = "The Top Ontario Schools with Active COVID-19 Cases ",
-                              title_font = {"size" : 16}, title_font_color = "lightgrey"
+                              title_font = {"size" : 16}, title_font_color = "black"
                               )
 
 
@@ -312,19 +313,19 @@ fig['layout']['xaxis3'].update(showgrid=False, showticklabels = False, range = [
 
 annotations = []
 annotations.append(dict(xref = 'x3', yref = 'y3',
-                    y = top_10_schools.iloc[0, 1], x = 63,
+                    y = top_10_schools.iloc[0, 1], x = 60,
                     text = top_10_schools.iloc[0, 1],
-                    font = dict(family = 'Arial', size = 10),
+                    font = dict(family = 'Helvetica', size = 12),
                     showarrow = False,
-                    align = 'center'))
+                    align = 'left'))
 for i, t in enumerate(top_10_schools["School"]):
     if i < len(top_10_schools)-1:
         annotations.append(dict(xref = 'x3', yref='y3',
                              y = top_10_schools.iloc[i+1, 1], x = 60,
                              text = top_10_schools.iloc[i+1, 1],
-                             font = dict(family = 'Arial', size = 10),
+                             font = dict(family = 'Helvetica', size = 12),
                              showarrow = False,
-                             align = 'center'
+                             align = 'left'
                              )
         )
 
@@ -335,7 +336,7 @@ annotations.append(dict(xref = 'x1', yref = 'y1',
                   showarrow = False,
                   font = dict(
                       size = 18,
-                      color = "white"),
+                      color = "black"),
                 bordercolor = 'crimson',
                 bgcolor = 'crimson'
                   ))
@@ -348,7 +349,7 @@ annotations.append(dict(xref = 'x4', yref = 'y4',
                      showarrow = False,
                      font = dict(
                              size = 16,
-                             color = 'lightgrey'),
+                             color = 'black'),
                      ) )
 
 
