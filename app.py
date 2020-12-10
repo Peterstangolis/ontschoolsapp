@@ -97,7 +97,7 @@ schools_w_two_or_more = df_schools_total_active_now[df_schools_total_active_now.
 
 #### CREATE THE DASHBOARD ####
 fig = make_subplots(
-        rows = 5, cols = 6,
+        rows = 5, cols = 6,row_heights = [0.2, 0.2, 0.2, 0.2, 0.2],
         subplot_titles = ("","","","","","","Cumulative COVID-19 Cases in Ontario Schools","Weekly Average COVID-19 Cases in Ontario Schools"
     #    "Top Ontario Schools with Active COVID-19 Cases"
         ),
@@ -137,7 +137,6 @@ fig.add_trace(
         mode = "number+delta",
         number = {"font" : {"size" : 70}},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Reported Cases</span>"},
-        domain = {'row': 0, 'column': 0}
     ),
     row = 1, col = 1
 )
@@ -188,7 +187,7 @@ fig.add_trace(
         value = value,
         number = {"font" : {"size" : 70}},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Schools Closed</span>"},
-        domain = {'x' : [0, 1], 'y' : [0,1]}),
+        ),
     row = 1, col = 5)
 
 
