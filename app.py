@@ -321,7 +321,7 @@ fig.update_layout(
 
 fig['layout']['yaxis1'].update(automargin = True, range = [0, 6500], showgrid = True, gridcolor = 'lightgrey')
 fig['layout']['yaxis2'].update(showgrid=True, showticklabels = False, range = [0, 300])
-fig['layout']['yaxis3'].update(showgrid=True, showticklabels = True, range = [0, 700])
+fig['layout']['yaxis3'].update(showgrid=True, showticklabels = False, range = [0, 700])
 #fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
 fig['layout']['xaxis1'].update(showgrid = False, automargin = False, tickangle = 0)
 fig['layout']['xaxis3'].update(tickangle = -45, title = "Top 30 Municipalities")
@@ -384,7 +384,10 @@ fig.layout.coloraxis.update(showscale = False)
 # Boostrap CSS
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets,
+                meta_tags = [
+                {"name": "viewpoint", "content": "width=device-width, initial-scale=1"}
+                ])
 
 app.title = "ONT School COVID-19 Dashboard"
 server = app.server
