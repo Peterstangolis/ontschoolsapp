@@ -109,7 +109,7 @@ fig = make_subplots(
                     [  None, None, None, None, {"type": "indicator", "rowspan" : 1, "colspan" : 2}, None],
                 ],
      subplot_titles = ("","","","","","","Cumulative COVID-19 Cases in Ontario Schools","Weekly Average COVID-19 Cases in Ontario Schools",
-                       "Top Schools with Active COVID-19 Cases", f"Ontario Municipalities with Active COVID-19 Case Numbers On:{max(df_sum.reported_date).date()}", ""),
+                       "Top Schools with Active COVID-19 Cases", f"Confirmed COVID-19 Case Numbers in <br>Ontario Municipalities On:{max(df_sum.reported_date).date()}", ""),
 )
 
 last_reported_date = max(df_sum.reported_date)
@@ -179,7 +179,7 @@ fig.add_trace(
         value = schools_w_cases,
         delta = {'reference' : y_schools_w_cases, 'increasing' : {'color' : '#5DADE2' }},
         #number = {"font" : {"size" : 70}},
-        title = {"text" : f" <br><span style = 'font-size: medium; color:#294C63'>Active Cases <br>{perc_school_cases}% of ONT Schools</span>"}),
+        title = {"text" : f" <br><span style = 'font-size: 0.7em; color:#294C63'>Active Cases <br>{perc_school_cases}% of ONT Schools</span>"}),
     row = 1, col = 4
 )
 
@@ -306,8 +306,8 @@ fig.update_layout(
     title_font_color = '#3D92A8',
     showlegend = False,
     yaxis_title = "Cumulative Cases",
-    font = dict(
-            size = 13))
+    titlefont = dict(
+            size = 12))
     #margin = dict(pad = 2)\
 
 
@@ -324,14 +324,18 @@ fig['layout']['yaxis1'].update(automargin = True, range = [0, 6700], showgrid = 
 fig['layout']['yaxis2'].update(showgrid=True, showticklabels = False, range = [0, 300])
 fig['layout']['yaxis3'].update(showgrid=True, showticklabels = False, range = [0, 700])
 #fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis1'].update(tickangle= -30, showgrid = False, automargin = False,
-                                tickfont=dict(size = 11))
+fig['layout']['xaxis1'].update(tickangle= 0, showgrid = False, automargin = False,
+                                tickfont=dict(size = 11),
+                                dtick = 'M1',
+                                tickformat = "%b\n%y")
 fig['layout']['xaxis3'].update(tickangle = -45, title = "Top 30 Municipalities",
                                 tickfont=dict(size = 11))
 #fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis2'].update(tickangle = -30,
+fig['layout']['xaxis2'].update(tickangle = 0,
                                title_font_color = "#3D92A8",
-                               tickfont=dict(size = 11))
+                               tickfont=dict(size = 11),
+                               dtick = 'M1',
+                               tickformat = "%b\n%y")
 #fig['layout']['xaxis3'].update(showgrid=False, showticklabels = False, range = [0, 80],
 #                              title = "Case Number & Associated School", title_font_color = "#3D92A8",
 #                              )
@@ -403,7 +407,7 @@ app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verd
                 'color' : 'lightgrey',
                 'padding-top' : '25px',
                 'padding-bottom' : '0px',
-                'font-size' : '200%',
+                'font-size' : '220%',
                 'height' : '60px',
                 'line-height': 1.2,
                 'margin-top' : '30px',
