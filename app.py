@@ -136,7 +136,7 @@ fig.add_trace(
         value = value_t,
         delta = {'reference': reference_t, 'increasing' : {'color' : '#5DADE2' }, 'decreasing' : {'color' : 'crimson' }},
         mode = "number+delta",
-        number = {"font" : {"size" : 70}},
+        number = {"font" : {"size" : 60}},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Reported Cases</span>"},
     ),
     row = 1, col = 1
@@ -147,7 +147,7 @@ fig.add_trace(
         value = value_student,
         delta = {'reference': reference_student, 'increasing' : {'color' : '#5DADE2' }, 'decreasing' : {'color' : 'crimson' }},
         mode = "number+delta",
-        number = {"font" : {"size" : 70}},
+        number = {"font" : {"size" : 60}},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Student Cases</span>"},
         domain = {'row': 0, 'column': 2}),
      row = 1, col = 2
@@ -158,7 +158,7 @@ fig.add_trace(
         mode = "number+delta",
         value = value_staff,
         delta = {"reference": reference_staff, 'increasing' : {'color' : '#5DADE2' }, 'decreasing' : {'color' : 'crimson' }},
-        number = {"font" : {"size" : 70}},
+        number = {"font" : {"size" : 60}},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Staff Cases</span>"},
         domain = {'row': 0, 'column': 1}),
     row = 1, col = 3
@@ -192,7 +192,7 @@ fig.add_trace(
         mode = 'number+delta',
         delta = {'reference' : value_yest, 'increasing' : {'color' : '#5DADE2' }},
         value = value,
-        number = {"font" : {"size" : 70}},
+        number = {"font" : {"size" : 60}},
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Schools Closed</span>"},
         ),
     row = 1, col = 5)
@@ -220,7 +220,7 @@ fig.add_trace(
         mode = 'number',
         value = schools_w_two_or_more,
         title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Schools with at least 2 <br>Active Cases</span>"},
-        number = {"font" : {"size" : 70}}
+        number = {"font" : {"size" : 60}}
     ),
     row = 1, col = 6)
 
@@ -399,15 +399,15 @@ app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verd
                 'color' : 'lightgrey',
                 'padding-top' : '25px',
                 'padding-bottom' : '0px',
-                'font-size' : '60px',
+                'font-size' : '55px',
                 'height' : '70px',
                 'line-height': 1.2,
                 'margin-top' : '30px',
-                'font-weight' : 'bold'
+                #'font-weight' : 'bold'
             }),
 
     #title = {'text': f"<span style='font-size:0.8em; color:#294C63'> Schools Days Completed:<br> {days_remain} To Go </span>"},
-    html.H5(children =   f"Updated: {max(df_sum.reported_date).date()}",
+    html.H5(children =   f"UPDATED: {max(df_sum.reported_date).date()}",
             style = {
                 'textAlign' : 'center',
                 'color' : '#5DADE2',
@@ -416,8 +416,9 @@ app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verd
                 'font-size' : '25px',
                 'height' : '20px',
                 'line-height': 1.1,
-                'font-weight' : 'bold'
+                #'font-weight' : 'bold'
                 #'background-color' : 'lightblue'
+                'font-variant-caps': 'small-caps'
             }),
 
     dcc.Graph(
@@ -426,6 +427,7 @@ app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verd
                  'margin-left' : '20px',
                  'margin-right' : '20px',
                  'margin-top' : '20px'},
+        config = {'responsive': True},
         figure = fig,
     ),
     # html.P(children = '"Source:" <a ref> "https://data.ontario.ca/dataset/summary-of-cases-in-schools" target="_blank">  Schools COVID-19 Data</a>',
@@ -452,9 +454,9 @@ app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verd
                      'margin-left' : '30px'
                  }),
 
-    dcc.Markdown('''
-            [Data Source]("https://data.ontario.ca/dataset/summary-of-cases-in-schools")
-            ''',
+    html.A("Data Source", href="https://data.ontario.ca/dataset/summary-of-cases-in-schools",
+            target="_blank",
+
             style = {
                 'textAlign' : 'left',
                 'color' : 'lightgrey',
