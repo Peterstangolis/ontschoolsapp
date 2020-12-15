@@ -136,8 +136,8 @@ fig.add_trace(
         value = value_t,
         delta = {'reference': reference_t, 'increasing' : {'color' : '#5DADE2' }, 'decreasing' : {'color' : 'crimson' }},
         mode = "number+delta",
-        number = {"font" : {"size" : 60}},
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Reported Cases</span>"},
+        #number = {"font" : {"size" : 60}},
+        title = {"text" : " <br><span style = 'font-size: 0.7em; color:#294C63'>Reported Cases</span>"},
     ),
     row = 1, col = 1
 )
@@ -147,8 +147,8 @@ fig.add_trace(
         value = value_student,
         delta = {'reference': reference_student, 'increasing' : {'color' : '#5DADE2' }, 'decreasing' : {'color' : 'crimson' }},
         mode = "number+delta",
-        number = {"font" : {"size" : 60}},
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Student Cases</span>"},
+        #number = {"font" : {"size" : 60}},
+        title = {"text" : " <br><span style = 'font-size: 0.7em; color:#294C63'>Student Cases</span>"},
         domain = {'row': 0, 'column': 2}),
      row = 1, col = 2
 )
@@ -158,8 +158,8 @@ fig.add_trace(
         mode = "number+delta",
         value = value_staff,
         delta = {"reference": reference_staff, 'increasing' : {'color' : '#5DADE2' }, 'decreasing' : {'color' : 'crimson' }},
-        number = {"font" : {"size" : 60}},
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Staff Cases</span>"},
+        #number = {"font" : {"size" : 60}},
+        title = {"text" : " <br><span style = 'font-size: 0.7em; color:#294C63'>Staff Cases</span>"},
         domain = {'row': 0, 'column': 1}),
     row = 1, col = 3
 )
@@ -179,7 +179,7 @@ fig.add_trace(
         value = schools_w_cases,
         delta = {'reference' : y_schools_w_cases, 'increasing' : {'color' : '#5DADE2' }},
         #number = {"font" : {"size" : 70}},
-        title = {"text" : f" <br><span style = 'font-size: medium; color:#5DADE2'>Active Cases <br>{perc_school_cases}% of ONT Schools</span>"}),
+        title = {"text" : f" <br><span style = 'font-size: medium; color:#294C63'>Active Cases <br>{perc_school_cases}% of ONT Schools</span>"}),
     row = 1, col = 4
 )
 
@@ -192,8 +192,8 @@ fig.add_trace(
         mode = 'number+delta',
         delta = {'reference' : value_yest, 'increasing' : {'color' : '#5DADE2' }},
         value = value,
-        number = {"font" : {"size" : 60}},
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Schools Closed</span>"},
+        #number = {"font" : {"size" : 60}},
+        title = {"text" : " <br><span style = 'font-size: 0.7em; color:#294C63'>Schools Closed</span>"},
         ),
     row = 1, col = 5)
 
@@ -203,8 +203,8 @@ fig.add_trace(
     go.Indicator(
         mode = "gauge+number",
         value = df_sum.reported_date.count(),
-        title = {'text': f"<span style='font-size:0.8em; color:#294C63'> Schools Days Completed:<br> {days_remain} To Go </span>"},
-        number = {"font" : {"size" : 60}},
+        title = {'text': f"<span style='font-size:0.7em; color:#294C63'> Schools Days Completed:<br> {days_remain} To Go </span>"},
+        #number = {"font" : {"size" : 60}},
         gauge = {
             'axis' : { 'range' : [0, 195]},
             'bar' : {'color' : '#5DADE2'},
@@ -219,8 +219,8 @@ fig.add_trace(
     go.Indicator(
         mode = 'number',
         value = schools_w_two_or_more,
-        title = {"text" : " <br><span style = 'font-size: 0.8em; color:#294C63'>Schools with at least 2 <br>Active Cases</span>"},
-        number = {"font" : {"size" : 60}}
+        title = {"text" : " <br><span style = 'font-size: 0.7em; color:#294C63'>Schools with at least 2 <br>Active Cases</span>"},
+        #number = {"font" : {"size" : 60}}
     ),
     row = 1, col = 6)
 
@@ -253,7 +253,7 @@ fig.add_trace(
 
 
 # Top Schools with Active CASES
-top_10_schools = df_active_now.groupby('school')['total_confirmed_cases'].sum().reset_index().sort_values(by = "total_confirmed_cases", ascending = False).head(13)
+top_10_schools = df_active_now.groupby('school')['total_confirmed_cases'].sum().reset_index().sort_values(by = "total_confirmed_cases", ascending = False).head(15)
 top_10_schools = top_10_schools.rename({"total_confirmed_cases" : "Active Cases", "school": "School"}, axis = 1)
 top_10_schools.reset_index(inplace = True)
 
@@ -275,17 +275,18 @@ fig.add_trace(
     go.Table(
         columnorder = [1, 2],
         columnwidth = [200, 80],
-        header=dict(values=['SCHOOL', 'ACTIVE CASES'],
+        header=dict(values=[['<b>SCHOOL</b>'],['<b>CASES</b>']],
                 line_color='#F8F9F9',
                 fill_color='#5DADE2',
                 align=['left','center'],
-                font = dict(color='#154360', size = 14),
-                height = 30),
+                font = dict(color='#154360', size = 13),
+                height = 25
+                ),
         cells=dict(values= [top_10_schools[k].tolist() for k in top_10_schools.columns[1:]], # 2nd column
                line_color='#F8F9F9',
                fill_color=[['#F5F5F5','#A4CDE8']* len(top_10_schools)],
                align=['left', 'center'],
-               font = dict(color = '#154360', size = 14),
+               font = dict(color = '#154360', size = 13),
                height = 25)
     ),
     row=2, col = 5
@@ -306,7 +307,7 @@ fig.update_layout(
     showlegend = False,
     yaxis_title = "Cumulative Cases",
     font = dict(
-            size = 14))
+            size = 13))
     #margin = dict(pad = 2)\
 
 
@@ -319,15 +320,18 @@ fig.update_layout(
 # fig.update_yaxes(
 #     showgrid = True, gridcolor = "lightgrey")
 
-fig['layout']['yaxis1'].update(automargin = True, range = [0, 6500], showgrid = True, gridcolor = 'lightgrey')
+fig['layout']['yaxis1'].update(automargin = True, range = [0, 6700], showgrid = True, gridcolor = 'lightgrey')
 fig['layout']['yaxis2'].update(showgrid=True, showticklabels = False, range = [0, 300])
 fig['layout']['yaxis3'].update(showgrid=True, showticklabels = False, range = [0, 700])
 #fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis1'].update(showgrid = False, automargin = False, tickangle = 0)
-fig['layout']['xaxis3'].update(tickangle = -45, title = "Top 30 Municipalities")
+fig['layout']['xaxis1'].update(tickangle= -30, showgrid = False, automargin = False,
+                                tickfont=dict(size = 11))
+fig['layout']['xaxis3'].update(tickangle = -45, title = "Top 30 Municipalities",
+                                tickfont=dict(size = 11))
 #fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
-fig['layout']['xaxis2'].update(tickangle = 0,
-                               title_font_color = "#3D92A8")
+fig['layout']['xaxis2'].update(tickangle = -30,
+                               title_font_color = "#3D92A8",
+                               tickfont=dict(size = 11))
 #fig['layout']['xaxis3'].update(showgrid=False, showticklabels = False, range = [0, 80],
 #                              title = "Case Number & Associated School", title_font_color = "#3D92A8",
 #                              )
@@ -399,11 +403,12 @@ app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verd
                 'color' : 'lightgrey',
                 'padding-top' : '25px',
                 'padding-bottom' : '0px',
-                'font-size' : '55px',
-                'height' : '70px',
+                'font-size' : '200%',
+                'height' : '60px',
                 'line-height': 1.2,
                 'margin-top' : '30px',
-                #'font-weight' : 'bold'
+                'font-family':'Monaca',
+                'font-weight' : 'bold'
             }),
 
     #title = {'text': f"<span style='font-size:0.8em; color:#294C63'> Schools Days Completed:<br> {days_remain} To Go </span>"},
@@ -414,9 +419,10 @@ app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verd
                 'color' : 'lightgrey',
                 'padding-top' : '0px',
                 'font-size' : '25px',
+                'font-family':'Monaca',
                 'height' : '20px',
                 'line-height': 1.1,
-                #'font-weight' : 'bold'
+                'font-weight' : 'bold',
                 #'background-color' : 'lightblue'
                 'font-variant-caps': 'small-caps'
             }),
