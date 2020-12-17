@@ -108,7 +108,7 @@ fig = make_subplots(
                     [{"type" : "bar", "rowspan": 2, "colspan" : 4}, None, None, None, None, None],
                     [  None, None, None, None, {"type": "indicator", "rowspan" : 1, "colspan" : 2}, None],
                 ],
-     subplot_titles = ("","","","","","","Cumulative COVID-19 Cases in Ontario Schools","Weekly Average COVID-19 Cases in Ontario Schools",
+     subplot_titles = ("","","","","","","Cumulative COVID-19 Cases","Weekly Average COVID-19 Cases",
                        "Top Schools with Active COVID-19 Cases", f"Confirmed COVID-19 Case Numbers in <br>Ontario Municipalities On:{max(df_sum.reported_date).date()}", ""),
 )
 
@@ -148,7 +148,7 @@ fig.add_trace(
         delta = {'reference': reference_student, 'increasing' : {'color' : '#5DADE2' }, 'decreasing' : {'color' : 'crimson' }},
         mode = "number+delta",
         #number = {"font" : {"size" : 60}},
-        title = {"text" : " <br><span style = 'font-size: 0.7em; color:#294C63'>Student Cases</span>"},
+        title = {"text" : " <br><span style = 'font-size: 0.7em; color:#294C63'>Student</span>"},
         domain = {'row': 0, 'column': 2}),
      row = 1, col = 2
 )
@@ -159,7 +159,7 @@ fig.add_trace(
         value = value_staff,
         delta = {"reference": reference_staff, 'increasing' : {'color' : '#5DADE2' }, 'decreasing' : {'color' : 'crimson' }},
         #number = {"font" : {"size" : 60}},
-        title = {"text" : " <br><span style = 'font-size: 0.7em; color:#294C63'>Staff Cases</span>"},
+        title = {"text" : " <br><span style = 'font-size: 0.7em; color:#294C63'>Staff</span>"},
         domain = {'row': 0, 'column': 1}),
     row = 1, col = 3
 )
@@ -179,7 +179,7 @@ fig.add_trace(
         value = schools_w_cases,
         delta = {'reference' : y_schools_w_cases, 'increasing' : {'color' : '#5DADE2' }},
         #number = {"font" : {"size" : 70}},
-        title = {"text" : f" <br><span style = 'font-size: 0.7em; color:#294C63'>Active Cases <br>{perc_school_cases}% of ONT Schools</span>"}),
+        title = {"text" : f" <br><span style = 'font-size: 0.7em; color:#294C63'>Schools with <br>Active Cases <br> ({perc_school_cases}% ONT)</span>"}),
     row = 1, col = 4
 )
 
@@ -217,9 +217,9 @@ fig.add_trace(
 
 fig.add_trace(
     go.Indicator(
-        mode = 'number',
+        mode = 'number+delta',
         value = schools_w_two_or_more,
-        title = {"text" : " <br><span style = 'font-size: 0.7em; color:#294C63'>Schools with at least 2 <br>Active Cases</span>"},
+        title = {"text" : " <br><span style = 'font-size: 0.7em; color:#294C63'>Schools with <br>at least 2 <br>Active Cases</span>"},
         #number = {"font" : {"size" : 60}}
     ),
     row = 1, col = 6)
@@ -253,9 +253,13 @@ fig.add_trace(
 
 
 # Top Schools with Active CASES
-top_10_schools = df_active_now.groupby('school')['total_confirmed_cases'].sum().reset_index().sort_values(by = "total_confirmed_cases", ascending = False).head(15)
+top_10_schools = df_active_now.groupby('school')['total_confirmed_cases'].sum().reset_index().sort_values(by = "total_confirmed_cases", ascending = False).head(16)
 top_10_schools = top_10_schools.rename({"total_confirmed_cases" : "Active Cases", "school": "School"}, axis = 1)
 top_10_schools.reset_index(inplace = True)
+
+# Number of schools in ONT with at least 2 confirmed case:
+schools_with_one_case = df_active["school"].nunique()
+perc_schools_one = round(schools_with_one_case/total_schools_ont, 1)
 
 
 # colors = ['#5DADE2',] * len(top_10_schools)
@@ -320,7 +324,7 @@ fig.update_layout(
 # fig.update_yaxes(
 #     showgrid = True, gridcolor = "lightgrey")
 
-fig['layout']['yaxis1'].update(automargin = True, range = [0, 6700], showgrid = True, gridcolor = 'lightgrey')
+fig['layout']['yaxis1'].update(automargin = True, range = [0, 7200], showgrid = True, gridcolor = 'lightgrey')
 fig['layout']['yaxis2'].update(showgrid=True, showticklabels = False, range = [0, 300])
 fig['layout']['yaxis3'].update(showgrid=True, showticklabels = False, range = [0, 700])
 #fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
@@ -328,7 +332,7 @@ fig['layout']['xaxis1'].update(tickangle= 0, showgrid = False, automargin = Fals
                                 tickfont=dict(size = 11),
                                 dtick = 'M1',
                                 tickformat = "%b\n%y")
-fig['layout']['xaxis3'].update(tickangle = -45, title = "Top 30 Municipalities",
+fig['layout']['xaxis3'].update(tickangle = -40, title = "Top 30 Municipalities",
                                 tickfont=dict(size = 11))
 #fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
 fig['layout']['xaxis2'].update(tickangle = 0,
@@ -428,18 +432,34 @@ app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verd
                 'line-height': 1.1,
                 'font-weight' : 'bold',
                 #'background-color' : 'lightblue'
-                'font-variant-caps': 'small-caps'
-            }),
+                'font-variant-caps': 'small-caps'}),
+
+    # html.Div(style={"backgroundColor":'white'}, children = [
+    #     dcc.Markdown('''f"* **{schools_with_one_case}** schools have had at least 1 confirmed COVID-19 case out of **{total_schools_ont}** schools in Ontario",
+    #                  f"* **{perc_school_cases}%** of Ontario schools have at least 1 active case",''',
+    #
+    #             style = {"color" : "black",
+    #                     "padding-top" : "40px",
+    #                     "margin-left": "70px",
+    #                     "margin-top" : '10px',
+    #                     #"font-weight" : 'bold',
+    #                     "font-size" : "15px",
+    #                     "height" : "20px",
+    #                     #"backgroundColor" : "white"}),
+    #                     #"border-top" : '2px solid red'
+    #                     }),
+        #dcc.Markdown("test"),
 
     dcc.Graph(
         style = {'height':"100vh",
-                 'margin-bottom' : '20px',
-                 'margin-left' : '20px',
-                 'margin-right' : '20px',
-                 'margin-top' : '20px'},
+                'margin-bottom' : '20px',
+                'margin-left' : '10px',
+                'margin-right' : '10px',
+                'margin-top' : '10px'},
         config = {'responsive': True},
         figure = fig,
-    ),
+        ),
+
     # html.P(children = '"Source:" <a ref> "https://data.ontario.ca/dataset/summary-of-cases-in-schools" target="_blank">  Schools COVID-19 Data</a>',
     #                   style = {
     #                       'textAlign' : 'right',
