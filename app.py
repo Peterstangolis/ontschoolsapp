@@ -253,7 +253,7 @@ fig.add_trace(
 
 
 # Top Schools with Active CASES
-top_10_schools = df_active_now.groupby('school')['total_confirmed_cases'].sum().reset_index().sort_values(by = "total_confirmed_cases", ascending = False).head(16)
+top_10_schools = df_active_now.groupby('school')['total_confirmed_cases'].sum().reset_index().sort_values(by = "total_confirmed_cases", ascending = False).head(25)
 top_10_schools = top_10_schools.rename({"total_confirmed_cases" : "Active Cases", "school": "School"}, axis = 1)
 top_10_schools.reset_index(inplace = True)
 
@@ -324,14 +324,14 @@ fig.update_layout(
 # fig.update_yaxes(
 #     showgrid = True, gridcolor = "lightgrey")
 
-fig['layout']['yaxis1'].update(automargin = True, range = [0, 7200], showgrid = True, gridcolor = 'lightgrey')
+fig['layout']['yaxis1'].update(automargin = True, range = [0, 8000], showgrid = True, gridcolor = 'lightgrey')
 fig['layout']['yaxis2'].update(showgrid=True, showticklabels = False, range = [0, 300])
-fig['layout']['yaxis3'].update(showgrid=True, showticklabels = False, range = [0, 700])
+fig['layout']['yaxis3'].update(showgrid=True, showticklabels = False, range = [0, 900])
 #fig['layout']['yaxis3'].update(showgrid=False, showticklabels = False)
 fig['layout']['xaxis1'].update(tickangle= 0, showgrid = False, automargin = False,
                                 tickfont=dict(size = 11),
                                 dtick = 'M1',
-                                tickformat = "%b\n%y")
+                                tickformat = "%b %d\n%y")
 fig['layout']['xaxis3'].update(tickangle = -40, title = "Top 30 Municipalities",
                                 tickfont=dict(size = 11))
 #fig['layout']['yaxis2'].update(showgrid=False, showticklabels = False)
@@ -339,7 +339,7 @@ fig['layout']['xaxis2'].update(tickangle = 0,
                                title_font_color = "#3D92A8",
                                tickfont=dict(size = 11),
                                dtick = 'M1',
-                               tickformat = "%b\n%y")
+                               tickformat = "%b %d\n%Y")
 #fig['layout']['xaxis3'].update(showgrid=False, showticklabels = False, range = [0, 80],
 #                              title = "Case Number & Associated School", title_font_color = "#3D92A8",
 #                              )
@@ -477,16 +477,21 @@ app.layout = html.Div(style = {'backgroundColor':'#711411', 'font-family': 'Verd
                      'textAlign' : 'left',
                      'color' : 'lightgrey',
                      'font' : 'Lucida Handwriting',
-                     'font-size' : '13',
-                     'font-style' : 'italic',
-                     'font-weight' : 'bold',
+                     'font-size' : '12',
+                     #'font-style' : 'italic',
+                     #'font-weight' : 'bold',
                      'margin-bottom' : '10px',
                      'margin-left' : '30px'
                  }),
-
-    html.A("Data Source", href="https://data.ontario.ca/dataset/summary-of-cases-in-schools",
+    html.Label("Data obtained from the Ontario Governments website",
+            style = {
+                'textAlign' : 'left',
+                'color' : 'lightgrey',
+                'font-stye' : 'italic',
+                'margin-left' : '30px'
+            }),
+    html.A("Source", href="https://data.ontario.ca/dataset/summary-of-cases-in-schools",
             target="_blank",
-
             style = {
                 'textAlign' : 'left',
                 'color' : 'lightgrey',
